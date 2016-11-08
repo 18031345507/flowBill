@@ -40,7 +40,6 @@ function showqq(){
          $('.right').css({'height':(currentCount+'%'),'opacity':1});
     },30)
 }
-
 $(document).swipeDown(function(){
 	last.row = now.row;
 	if (last.row!=1) { now.row = last.row-1; pageMove(towards.down);}	
@@ -51,6 +50,7 @@ $(document).swipeDown(function(){
     if(now.row== 3){
     	var myChart = echarts.init(document.getElementById("ch-pie"));
 		myChart.setOption(option);		
+	
  	}
 })
 
@@ -89,26 +89,41 @@ function pageMove(tw){
 		$(nowPage).find("img").removeClass("hide");
 	},600);
 }
-// 环形图配置项 
 
+// 环形图配置项 
 	option = {
 	    tooltip: {
 	        trigger: 'item',
-	        formatter: "{b}<br/> {c} ({d}%)"
+	        formatter: function(params, ticket, callback){
+               var name = typeof(params.name) == "undefined"?"":params.name,
+                  value = typeof(params.value) == "undefined" ? "":params.value + "M",
+                     t1 = typeof(params.data.t1) == "undefined" ? "":params.data.t1 + ":",
+                     f1 = typeof(params.data.f1) == "undefined"?"":params.data.f1 + "M",
+                     t2 = typeof(params.data.t2) == "undefined" ? "":params.data.t2 + ":",
+                     f2 = typeof(params.data.f2) == "undefined"?"":params.data.f2 + "M",
+                     t3 = typeof(params.data.t3) == "undefined" ? "":params.data.t3 + ":",
+                     f3 = typeof(params.data.f3) == "undefined"?"":params.data.f3 + "M";
 
+			   var res = '<p>' +name+'</p>';
+				   res+= '<span>'+value+'</span>';
+				   res+= '<ul style="font-size:0.7rem;line-height:1;"><li style="border-left:2px solid #15becf;padding-left:5px;">'+t1+f1+'</li>';
+				   res+= '<li style="border-left:2px solid #ff9900;padding-left:5px;margin:0.4rem 0;">'+t2+f2+'</li>';
+				   res+= '<li style="border-left:2px solid #9bb300;padding-left:5px;">'+t3+f3+'</li></ul>';
+			   setTimeout(function (){callback(ticket, res);}, 400);
+               return 'loading';
+	        }
 	    },
 	    series: [
 	        {
 	            name:'',
 	            type:'pie',
 	            radius: ['30%', '55%'],
-
 	            data:[
-	                {value:40, name:'月包'},
-	                {value:100, name:'一次性包'},
-	                {value:90, name:'其他'},
-	                {value:120, name:'结转'},
-	                {value:120, name:'主套餐'}
+	                {value:500, name:"月包"},
+	                {value:1993, name:'一次性包',t1:"月包",f1:123,t2:"月包",f2:123,t3:"加油包",f3:123},
+	                {value:1024, name:'其他',t1:"漫游包",f1:123,t2:"定向包",f2:123,t3:"夜间包",f3:123},
+	                {value:1993, name:'结转',t1:"主套餐",f1:123,t2:"月包",f2:123},
+	                {value:3072, name:'主套餐'}
 	            ]
 	        }
 	    ],
